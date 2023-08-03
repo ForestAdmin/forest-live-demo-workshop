@@ -26,8 +26,34 @@ agent.addDataSource(
     uri: process.env.DATABASE_URL,
     schema: process.env.DATABASE_SCHEMA,
     sslMode: process.env.DATABASE_SSL_MODE as SslMode,
-  }),
+  })
 );
+
+agent.customizeCollection('workshop', collection => {
+  collection.addAction('Validate workshop', {
+    scope: 'Bulk',
+    execute: async (context, resultBuilder) =>  {
+      try {
+        const ids = await context.getRecordIds();
+
+        await context.collection.update({
+          conditionTree: {
+            field: 'id',
+            operator: 'In',
+            value: ids,
+          }
+        }, {
+          status: 'confirmed',
+        });
+
+        return resultBuilder.success('The workshops have been validated');
+      } catch (e) {
+        console.error(e);
+        return resultBuilder.error(e.message);
+      }
+    }
+  })
+})
 
 // Add customizations here.
 // For instance, you can code custom actions, charts, create new fields or relationships, load plugins.

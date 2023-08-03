@@ -84,6 +84,8 @@ export type Schema = {
     flat: {
       'workshop:id': number;
       'workshop:name': string;
+      'workshop:type': 'online' | 'on-site';
+      'workshop:status': 'pending-review' | 'confirmed';
       'workshop:description': string;
       'workshop:ambassador_id': number;
       'workshop:location_id': number;
@@ -113,6 +115,8 @@ export type Schema = {
     plain: {
       'id': number;
       'name': string;
+      'type': 'online' | 'on-site';
+      'status': 'pending-review' | 'confirmed';
       'description': string;
       'ambassador_id': number;
       'location_id': number;
