@@ -53,6 +53,61 @@ agent.customizeCollection('workshop', collection => {
       }
     }
   })
+
+  collection.addField('ambassador_check', {
+    columnType: 'String',
+    dependencies: ['ambassador_id'],
+    getValues(records, context) {
+      return records.map((record) => {
+        if (record.ambassador_id) {
+          return '🟢 1 / 1';
+        } else {
+          return '🔴 0 / 1';
+        }
+      })
+    }
+  });
+
+  collection.addAction('Add yourself in the workshop', {
+    scope: 'Single',
+    execute: async (context, resultBuilder) =>  {
+      try {
+        const workshop = await context.getRecord(['ambassador_id']);
+
+        if (workshop.ambassador_id) {
+          return resultBuilder.error('An ambassador is already present in this workshop, please contact him to switch first.');
+        } else {
+          const [ambassador] = await context.dataSource.getCollection('ambassador').list({
+            conditionTree: {
+              field: 'email',
+              operator: 'Equal',
+              value: context.caller.email,
+            }
+          }, ['id']);
+
+          if (!ambassador) {
+            return resultBuilder.error('You are not an ambassador yet, please request an ambassador account from your admins');
+          }
+
+          await context.collection.update({
+            conditionTree: {
+              field: 'id',
+              operator: 'Equal',
+              value: await context.getRecordId(),
+            }
+          }, {
+            ambassador_id: ambassador.id,
+          });
+
+          return resultBuilder.success('You are now the ambassador of the workshop');
+        }
+
+      } catch (e) {
+        console.error(e);
+        return resultBuilder.error(e.message);
+      }
+    }
+  })
 })
 
 // Add customizations here.
