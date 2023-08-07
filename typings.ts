@@ -55,6 +55,7 @@ export type Schema = {
       'birthdate': string;
       'created_at': string;
       'updated_at': string;
+      'nbrWorkshop': number;
     };
     nested: {};
     flat: {};
@@ -108,6 +109,7 @@ export type Schema = {
       'workshop:ambassador:birthdate': string;
       'workshop:ambassador:created_at': string;
       'workshop:ambassador:updated_at': string;
+      'workshop:ambassador:nbrWorkshop': number;
       'workshop:location:id': number;
       'workshop:location:country': string;
       'workshop:location:city': string;
@@ -159,6 +161,7 @@ export type Schema = {
       'user:workshop:ambassador:birthdate': string;
       'user:workshop:ambassador:created_at': string;
       'user:workshop:ambassador:updated_at': string;
+      'user:workshop:ambassador:nbrWorkshop': number;
       'user:workshop:location:id': number;
       'user:workshop:location:country': string;
       'user:workshop:location:city': string;
@@ -187,6 +190,7 @@ export type Schema = {
       'workshop:ambassador:birthdate': string;
       'workshop:ambassador:created_at': string;
       'workshop:ambassador:updated_at': string;
+      'workshop:ambassador:nbrWorkshop': number;
       'workshop:location:id': number;
       'workshop:location:country': string;
       'workshop:location:city': string;
@@ -225,6 +229,7 @@ export type Schema = {
       'ambassador:birthdate': string;
       'ambassador:created_at': string;
       'ambassador:updated_at': string;
+      'ambassador:nbrWorkshop': number;
       'location:id': number;
       'location:country': string;
       'location:city': string;

@@ -102,6 +102,22 @@
         {
           "defaultValue": null,
           "enums": [],
+          "field": "nbrWorkshop",
+          "integration": null,
+          "inverseOf": null,
+          "isFilterable": false,
+          "isPrimaryKey": false,
+          "isReadOnly": true,
+          "isRequired": false,
+          "isSortable": false,
+          "isVirtual": false,
+          "reference": null,
+          "type": "Number",
+          "validations": []
+        },
+        {
+          "defaultValue": null,
+          "enums": [],
           "field": "picture",
           "integration": null,
           "inverseOf": null,
