@@ -95,47 +95,130 @@ agent.customizeCollection('workshop', collection => {
     }
   });
 
-  collection.addAction('Add yourself in the workshop', {
-    scope: 'Single',
+  collection.addAction('Add yourself in workshops', {
+    scope: 'Bulk',
     execute: async (context, resultBuilder) =>  {
       try {
-        const workshop = await context.getRecord(['ambassador_id']);
+        const workshops = await context.getRecords(['id', 'ambassador_id']);
 
-        if (workshop.ambassador_id) {
-          return resultBuilder.error('An ambassador is already present in this workshop, please contact him to switch first.');
-        } else {
-          const [ambassador] = await context.dataSource.getCollection('ambassador').list({
-            conditionTree: {
-              field: 'email',
-              operator: 'Equal',
-              value: context.caller.email,
-            }
-          }, ['id']);
-
-          if (!ambassador) {
-            return resultBuilder.error('You are not an ambassador yet, please request an ambassador account from your admins');
-          }
-
-          await context.collection.update({
-            conditionTree: {
-              field: 'id',
-              operator: 'Equal',
-              value: await context.getRecordId(),
-            }
-          }, {
-            ambassador_id: ambassador.id,
-          });
-
-          return resultBuilder.success('You are now the ambassador of the workshop');
+        if (workshops.some(workshop => workshop.ambassador_id)) {
+          return resultBuilder.error('An ambassador is already present in one of workshops, please contact him to switch first.');
         }
+
+        const [ambassador] = await context.dataSource.getCollection('ambassador').list({
+          conditionTree: {
+            field: 'email',
+            operator: 'Equal',
+            value: context.caller.email,
+          }
+        }, ['id']);
+
+        if (!ambassador) {
+          return resultBuilder.error('You are not an ambassador yet, please request an ambassador account from your admins.');
+        }
+
+        const workshopIds = workshops.map(workshop => workshop.id);
+
+        await context.collection.update({
+          conditionTree: {
+            field: 'id',
+            operator: 'In',
+            value: workshopIds,
+          }
+        }, {
+          ambassador_id: ambassador.id,
+        });
+
+        return resultBuilder.success('You are now the ambassador of selected workshops.');
 
       } catch (e) {
         console.error(e);
         return resultBuilder.error(e.message);
       }
     }
-  })
-})
+  });
+
+  collection.addAction('Remove yourself from workshops', {
+    scope: 'Bulk',
+    execute: async (context, resultBuilder) => {
+      try {
+        const workshops = await context.getRecords(['id', 'ambassador_id']);
+        const [ambassador] = await context.dataSource.getCollection('ambassador').list({
+          conditionTree: {
+            field: 'email',
+            operator: 'Equal',
+            value: context.caller.email,
+          }
+        }, ['id']);
+
+        if (workshops.some(workshop => workshop.ambassador_id !== ambassador.id)) {
+          return resultBuilder.error('You can not remove another ambassador than you from a workshop.');
+        }
+
+        const workshopIds = workshops.map(workshop => workshop.id);
+
+        await context.collection.update({
+          conditionTree: {
+            field: 'id',
+            operator: 'In',
+            value: workshopIds,
+          }
+        }, {
+          ambassador_id: null,
+        });
+
+        return resultBuilder.success('You are not longer ambassador of selected workshops.');
+      } catch (e) {
+        console.error(e);
+        return resultBuilder.error(e.message);
+      }
+    },
+  });
+
+  collection.addAction('Register as observator', {
+    scope: 'Bulk',
+    execute: async (context, resultBuilder) => {
+      try {
+        const workshops = await context.getRecords(['id', 'observator_id']);
+
+        if (workshops.some(workshop => workshop.observator_id)) {
+          return resultBuilder.error('An observator is already present in one of workshops, please contact him to switch first.');
+        }
+
+        const [ambassador] = await context.dataSource.getCollection('ambassador').list({
+          conditionTree: {
+            field: 'email',
+            operator: 'Equal',
+            value: context.caller.email,
+          }
+        }, ['id']);
+
+        if (!ambassador) {
+          return resultBuilder.error('You are not an ambassador yet, please request an ambassador account from your admins.');
+        }
+
+        const workshopIds = workshops.map(workshop => workshop.id);
+
+        await context.collection.update({
+          conditionTree: {
+            field: 'id',
+            operator: 'In',
+            value: workshopIds,
+          }
+        }, {
+          observator_id: ambassador.id,
+        });
+
+        return resultBuilder.success('You are now observator of selected workshops.');
+
+      } catch (e) {
+        console.error(e);
+        return resultBuilder.error(e.message);
+      }
+    },
+  });
+
+});
 
 // Expose an HTTP endpoint.
 agent.mountOnStandaloneServer(Number(process.env.APPLICATION_PORT));
