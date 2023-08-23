@@ -95,6 +95,12 @@ agent.customizeCollection('workshop', collection => {
     }
   });
 
+  collection
+    .importField('programId', {
+      path: 'event:program:id',
+    })
+    .addManyToOneRelation('program', 'program', { foreignKey: 'programId'});
+
   collection.addAction('Add yourself in workshops', {
     scope: 'Bulk',
     execute: async (context, resultBuilder) =>  {

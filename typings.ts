@@ -225,12 +225,14 @@ export type Schema = {
       'created_at': string;
       'updated_at': string;
       'ambassador_check': string;
+      'programId': number;
     };
     nested: {
       'ambassador': Schema['ambassador']['plain'] & Schema['ambassador']['nested'];
       'location': Schema['location']['plain'] & Schema['location']['nested'];
       'event': Schema['event']['plain'] & Schema['event']['nested'];
       'observator': Schema['ambassador']['plain'] & Schema['ambassador']['nested'];
+      'program': Schema['program']['plain'] & Schema['program']['nested'];
     };
     flat: {
       'ambassador:id': number;
@@ -349,6 +351,20 @@ export type Schema = {
       'observator:inerested_program:owner:role': string;
       'observator:inerested_program:owner:created_at': string;
       'observator:inerested_program:owner:updated_at': string;
+      'program:id': number;
+      'program:name': string;
+      'program:description': string;
+      'program:owner_id': number;
+      'program:created_at': string;
+      'program:updated_at': string;
+      'program:owner:id': number;
+      'program:owner:firstname': string;
+      'program:owner:lastname': string;
+      'program:owner:email': string;
+      'program:owner:birthdate': string;
+      'program:owner:role': string;
+      'program:owner:created_at': string;
+      'program:owner:updated_at': string;
     };
   };
 };

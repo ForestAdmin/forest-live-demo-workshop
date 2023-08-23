@@ -1418,6 +1418,23 @@
         },
         {
           "defaultValue": null,
+          "enums": null,
+          "field": "program",
+          "integration": null,
+          "inverseOf": null,
+          "isFilterable": true,
+          "isPrimaryKey": false,
+          "isReadOnly": true,
+          "isRequired": false,
+          "isSortable": true,
+          "isVirtual": false,
+          "reference": "program.id",
+          "relationship": "BelongsTo",
+          "type": "Number",
+          "validations": []
+        },
+        {
+          "defaultValue": null,
           "enums": ["confirmed", "pending-review"],
           "field": "status",
           "integration": null,
